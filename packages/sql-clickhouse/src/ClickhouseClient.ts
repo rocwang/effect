@@ -385,7 +385,7 @@ const typeFromUnknown = (value: unknown): string => {
  */
 export const makeCompiler = (transform?: (_: string) => string) =>
   Statement.makeCompiler<ClickhouseCustom>({
-    dialect: "sqlite",
+    dialect: "clickhouse",
     placeholder(i, u) {
       return `{p${i}: ${typeFromUnknown(u)}}`
     },

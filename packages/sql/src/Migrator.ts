@@ -115,17 +115,19 @@ export const make = <RD = never>({
 )`
         ),
         clickhouse: () =>
-        sql`CREATE TABLE IF NOT EXISTS ${sql(table)}
-  (
-    migration_id UInt32,
-    created_at   Datetime('UTC') DEFAULT now('UTC'),
-    name         String
-  ) ENGINE = MergeTree
-  PRIMARY KEY migration_id
-  ORDER BY (migration_id, created_at)
-`,
+(sql as unknown as { asCommand: <A, E, R>(effect: Effect.Effect<A, E, R>) => Effect.Effect<A, E, R>}).asCommand(
+    sql`CREATE TABLE IF NOT EXISTS ${sql(table)}
+    (
+        migration_id UInt32,
+        created_at   Datetime('UTC') DEFAULT now('UTC'),
+        name         String
+    ) ENGINE = MergeTree
+    PRIMARY KEY migration_id
+    ORDER BY (migration_id, created_at)
+    `
+),
       orElse: () =>
-        sql`CREATE TABLE IF NOT EXISTS ${sql(table)} (
+            sql`CREATE TABLE IF NOT EXISTS ${sql(table)} (
   migration_id integer PRIMARY KEY NOT NULL,
   created_at datetime NOT NULL DEFAULT current_timestamp,
   name VARCHAR(255) NOT NULL
