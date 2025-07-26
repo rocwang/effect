@@ -114,6 +114,16 @@ export const make = <RD = never>({
   name text not null
 )`
         ),
+        clickhouse: () =>
+        sql`CREATE TABLE IF NOT EXISTS ${sql(table)}
+  (
+    migration_id UInt32,
+    created_at   Datetime('UTC') DEFAULT now('UTC'),
+    name         String
+  ) ENGINE = MergeTree
+  PRIMARY KEY migration_id
+  ORDER BY (migration_id, created_at)
+`,
       orElse: () =>
         sql`CREATE TABLE IF NOT EXISTS ${sql(table)} (
   migration_id integer PRIMARY KEY NOT NULL,
